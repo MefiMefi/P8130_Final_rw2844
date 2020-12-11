@@ -1,0 +1,48 @@
+---
+title: "step model"
+author: "Renjie Wei"
+date: "12/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(patchwork)
+knitr::opts_chunk$set(
+  fig.height = 6,
+  fig.width = 8,
+  message = F,
+  echo = T,
+  warning = F
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis",
+  digits = 3
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r }
+hatecrime = 
+  read_csv("./data/HateCrimes.csv",
+  col_types = "fffdddddd") %>% 
+  as.data.frame() %>% 
+  drop_na() %>% 
+  select(-state)
+
+step_model =
+  glm(hate_crimes_per_100k_splc ~ ., data = hatecrime) %>% 
+  step(direction = "both",
+                    scope = list(lower = . ~ 1,
+                                 upper = . ~ . ^ 2),
+                    trace = 0)
+step_df = step_model %>% broom::tidy()
+step_df %>% head(22) %>% knitr::kable()
+
+```
+
