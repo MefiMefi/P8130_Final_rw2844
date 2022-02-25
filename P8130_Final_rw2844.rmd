@@ -46,3 +46,10 @@ step_df %>% head(22) %>% knitr::kable()
 
 ```
 
+```{r}
+par(mfrow=c(2,2))
+for (i in 1:4) {
+  plot(step_model,which = i)
+}
+```
+
